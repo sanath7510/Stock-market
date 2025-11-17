@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fuzzy Stock Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body style="background-image:url('{{ url_for('static', filename='wallpaper.jpg') }}'); background-size:cover; background-attachment:fixed;">
+  <div class="container">
+    {% if step == 'input_ratios' %}
+      <h1>Step 1: Enter Company & Ratios</h1>
+      <form method="POST" action="/calculate" class="form">
+        <label>Company / Ticker</label>
+        <input type="text" name="company_name" required>
+        <label>Profit Margin (%)</label>
+        <input type="number" name="profit_margin" step="any" required>
+        <label>Debt Ratio (%)</label>
+        <input type="number" name="debt_ratio" step="any" required>
+        <label>ROA (%)</label>
+        <input type="number" name="roa" step="any" required>
+        <button class="btn" type="submit">Run Fuzzy Logic</button>
+      </form>
+    {% elif step == 'enter_stock_price' %}
+      <h1>{{ company_name }}</h1>
+      <p>PRICE VAR [%]: {{ result|round(2) }}</p>
+      <img src="data:image/png;base64,{{ graph_data }}" alt="Fuzzy Memberships" style="max-width:100%;border:1px solid #ddd;border-radius:12px;">
+      <form method="POST" action="/predict_price" style="margin-top:20px;">
+        <input type="hidden" name="company_name" value="{{ company_name }}">
+        <input type="hidden" name="price_var" value="{{ result }}">
+        <label>Enter Current Stock Price</label>
+        <input type="number" name="current_price" step="any" required>
+        <button class="btn" type="submit">Go to Page 3 (Real-time Graph)</button>
+      </form>
+    {% elif step == 'realtime_graph' %}
+      <h1>Page 3: Real-time Graph — {{ company_name }}</h1>
+      <p>This chart streams recent data with moving averages and the fuzzy price line.</p>
+      <canvas id="realtimeChart" data-ticker="{{ company_name }}" height="160"></canvas>
+      <div style="margin-top:16px;">
+        <a href="/" class="btn">Start Over</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
