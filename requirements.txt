@@ -1,6 +1,0 @@
-Flask
-matplotlib
-numpy
-pandas
-scikit-fuzzy
-yfinance
