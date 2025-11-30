@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: stock-fuzzy-dashboard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      PYTHON_VERSION: 3.10
